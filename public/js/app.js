@@ -1876,7 +1876,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     initializeApp: function initializeApp() {
-      var appID = "115794309760c46";
+      var appID = "14571ed5993bc4f";
       var cometChatSettings = new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].AppSettingsBuilder().subscribePresenceForAllUsers().setRegion("eu").build();
       _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].init(appID, cometChatSettings).then(function () {
         console.log("Initialization completed successfully");
@@ -2068,7 +2068,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
-// @ is an alias to /src
 
 
 
@@ -2090,63 +2089,27 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       loadingMessages: false
     };
   },
-  mounted: function mounted() {
-    var _this = this;
-
-    this.loadingMessages = true;
-    var listenerID = "UNIQUE_LISTENER_ID";
-    var messagesRequest = new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].MessagesRequestBuilder().setLimit(100).build();
-    messagesRequest.fetchPrevious().then(function (messages) {
-      console.log("Message list fetched:", messages);
-      console.log("this.groupMessages", _this.groupMessages);
-      _this.groupMessages = [].concat(_toConsumableArray(_this.groupMessages), _toConsumableArray(messages));
-      _this.loadingMessages = false;
-
-      _this.$nextTick(function () {
-        _this.scrollToBottom();
-      });
-    }, function (error) {
-      console.log("Message fetching failed with error:", error);
-    });
-    _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].addMessageListener(listenerID, new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].MessageListener({
-      onTextMessageReceived: function onTextMessageReceived(textMessage) {
-        console.log("Text message received successfully", textMessage); // Handle text message
-
-        console.log(_this.groupMessages);
-        _this.groupMessages = [].concat(_toConsumableArray(_this.groupMessages), [textMessage]);
-        _this.loadingMessages = false;
-
-        _this.$nextTick(function () {
-          _this.scrollToBottom();
-        });
-      }
-    }));
-  },
   created: function created() {
     this.getLoggedInUser();
   },
   methods: {
     getLoggedInUser: function getLoggedInUser() {
-      var _this2 = this;
+      var _this = this;
 
       _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].getLoggedinUser().then(function (user) {
-        _this2.username = user.name;
-        _this2.avatar = user.avatar;
-        _this2.uid = user.uid;
+        _this.username = user.name;
+        _this.avatar = user.avatar;
+        _this.uid = user.uid;
       }, function (error) {
-        _this2.$router.push({
+        _this.$router.push({
           name: "homepage"
         });
 
         console.log(error);
       });
     },
-    scrollToBottom: function scrollToBottom() {
-      var chat = document.getElementById("msg-page");
-      chat.scrollTo(0, chat.scrollHeight + 30);
-    },
     sendGroupMessage: function sendGroupMessage() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.sendingMessage = true;
       var receiverID = "supergroup";
@@ -2155,16 +2118,57 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var textMessage = new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].TextMessage(receiverID, messageText, receiverType);
       _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].sendMessage(textMessage).then(function (message) {
         console.log("Message sent successfully:", message);
-        _this3.chatMessage = "";
-        _this3.sendingMessage = false;
+        _this2.chatMessage = "";
+        _this2.sendingMessage = false;
 
-        _this3.$nextTick(function () {
-          _this3.scrollToBottom();
+        _this2.$nextTick(function () {
+          // this.scrollToBottom()
+          $("#msg-page").animate({
+            scrollTop: $('#msg-page').prop("scrollHeight")
+          }, 1000);
         });
       }, function (error) {
         console.log("Message sending failed with error:", error);
       });
     }
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    this.loadingMessages = true;
+    var listenerID = "UNIQUE_LISTENER_ID";
+    var messagesRequest = new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].MessagesRequestBuilder().setLimit(100).build();
+    messagesRequest.fetchPrevious().then(function (messages) {
+      console.log("Message list fetched:", messages);
+      console.log("this.groupMessages", _this3.groupMessages);
+      _this3.groupMessages = [].concat(_toConsumableArray(_this3.groupMessages), _toConsumableArray(messages));
+      _this3.loadingMessages = false;
+
+      _this3.$nextTick(function () {
+        // this.scrollToBottom();
+        $("#msg-page").animate({
+          scrollTop: $('#msg-page').prop("scrollHeight")
+        }, 1000);
+      });
+    }, function (error) {
+      console.log("Message fetching failed with error:", error);
+    });
+    _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].addMessageListener(listenerID, new _cometchat_pro_chat__WEBPACK_IMPORTED_MODULE_0__["CometChat"].MessageListener({
+      onTextMessageReceived: function onTextMessageReceived(textMessage) {
+        console.log("Text message received successfully", textMessage); // Handle text message
+
+        console.log(_this3.groupMessages);
+        _this3.groupMessages = [].concat(_toConsumableArray(_this3.groupMessages), [textMessage]);
+        _this3.loadingMessages = false;
+
+        _this3.$nextTick(function () {
+          // this.scrollToBottom();
+          $("#msg-page").animate({
+            scrollTop: $('#msg-page').prop("scrollHeight")
+          }, 1000);
+        });
+      }
+    }));
   }
 });
 
@@ -2245,6 +2249,11 @@ __webpack_require__.r(__webpack_exports__);
         alert('Please check your credentials');
       }
     },
+    redirectToRegister: function redirectToRegister() {
+      this.$router.push({
+        name: 'register'
+      });
+    },
     logUserInToCometChat: function logUserInToCometChat(token) {
       var _this2 = this;
 
@@ -2263,12 +2272,16 @@ __webpack_require__.r(__webpack_exports__);
       }, function (error) {
         _this2.showSpinner = false;
         alert("Whops. Something went wrong. This commonly happens when you enter a username that doesn't exist. Check the console for more information");
+
+        _this2.$router.push({
+          name: 'login',
+          params: {
+            username: _this2.username,
+            authenticated: true
+          }
+        });
+
         console.log("Login failed with error:", error.code);
-      });
-    },
-    redirectToRegister: function redirectToRegister() {
-      this.$router.push({
-        name: 'register'
       });
     }
   }
@@ -2357,6 +2370,11 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+    redirectToLogin: function redirectToLogin() {
+      this.$router.push({
+        name: 'login'
+      });
+    },
     createUserOnCometChat: function createUserOnCometChat(username) {
       var url, data, userResponse, userJson;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.async(function createUserOnCometChat$(_context) {
@@ -2366,15 +2384,16 @@ __webpack_require__.r(__webpack_exports__);
               url = "https://api-eu.cometchat.io/v2.0/users";
               data = {
                 uid: username,
-                name: "".concat(username, " sample")
+                name: "".concat(username, " sample"),
+                avatar: 'https://data-eu.cometchat.io/assets/images/avatars/captainamerica.png'
               };
               _context.prev = 2;
               _context.next = 5;
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(fetch(url, {
                 method: 'POST',
                 headers: new Headers({
-                  appid: "115794309760c46",
-                  apikey: "fa924db7a929e90041fa34ba365ab437ca113338",
+                  appid: "14571ed5993bc4f",
+                  apikey: "b775eec3ad93467b6a5f95d8bbb5ef56f9a239b9",
                   'Content-Type': 'application/json'
                 }),
                 body: JSON.stringify(data)
@@ -2417,8 +2436,8 @@ __webpack_require__.r(__webpack_exports__);
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(fetch(url, {
                 method: 'POST',
                 headers: new Headers({
-                  appid: "115794309760c46",
-                  apikey: "fa924db7a929e90041fa34ba365ab437ca113338",
+                  appid: "14571ed5993bc4f",
+                  apikey: "b775eec3ad93467b6a5f95d8bbb5ef56f9a239b9",
                   'Content-Type': 'application/json'
                 })
               }));
@@ -2462,8 +2481,8 @@ __webpack_require__.r(__webpack_exports__);
               return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.awrap(fetch(url, {
                 method: 'POST',
                 headers: new Headers({
-                  appid: "115794309760c46",
-                  apikey: "fa924db7a929e90041fa34ba365ab437ca113338",
+                  appid: "14571ed5993bc4f",
+                  apikey: "b775eec3ad93467b6a5f95d8bbb5ef56f9a239b9",
                   'Content-Type': 'application/json'
                 }),
                 body: JSON.stringify(data)
@@ -2500,11 +2519,6 @@ __webpack_require__.r(__webpack_exports__);
         console.log("Token updated successfully", response);
       })["catch"](function (error) {
         alert(error.response.data.message);
-      });
-    },
-    redirectToLogin: function redirectToLogin() {
-      this.$router.push({
-        name: 'login'
       });
     }
   }
@@ -39372,7 +39386,7 @@ var render = function() {
                             _vm._v(" "),
                             _c("span", { staticClass: "loading-text" }, [
                               _vm._v(
-                                "\n                        Loading Messages\n                      "
+                                "\n                            Loading Messages\n                          "
                               )
                             ])
                           ],
@@ -39413,6 +39427,16 @@ var render = function() {
                                             _c("span", [
                                               _vm._v(_vm._s(message.sender.uid))
                                             ]),
+                                            _c(
+                                              "span",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  "font-size": "0.7em"
+                                                }
+                                              },
+                                              [_vm._v("12:34pm")]
+                                            ),
                                             _c("br"),
                                             _vm._v(_vm._s(message.data.text))
                                           ])
@@ -39522,7 +39546,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "msg-header" }, [
-      _c("div", { staticClass: "active" }, [_c("h5", [_vm._v("#General")])])
+      _c("div", { staticClass: "active" }, [_c("h5", [_vm._v("Discuss")])])
     ])
   },
   function() {
@@ -39548,7 +39572,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("h6", { staticClass: "empty-chat-sub-title" }, [
         _vm._v(
-          "\n                                        Send your first message below.\n                                    "
+          "\n                                            Send your first message below.\n                                        "
         )
       ])
     ])
@@ -54920,7 +54944,7 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/images/empty-state.svg?20b61e23ab2c7c8443fe03a3e81369c0";
+module.exports = "/images/empty-state.svg?e9ff8a50baf14d3141f1e6a6e670fb49";
 
 /***/ }),
 
@@ -54931,7 +54955,7 @@ module.exports = "/images/empty-state.svg?20b61e23ab2c7c8443fe03a3e81369c0";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/images/login-illustration.svg?5c2a3faa9de446a5f6b0f23d826d27d1";
+module.exports = "/images/login-illustration.svg?a785750bdd705b483f28bbb2d65a53c1";
 
 /***/ }),
 
@@ -54942,7 +54966,7 @@ module.exports = "/images/login-illustration.svg?5c2a3faa9de446a5f6b0f23d826d27d
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/images/logo.svg?ce966c7ae354a5ee03c81a95840c3c63";
+module.exports = "/images/logo.svg?e23037bd0130953af21bbc55f6f3133e";
 
 /***/ }),
 
@@ -55027,32 +55051,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _App_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.vue */ "./resources/js/App.vue");
 /* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 
 
-
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
 
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var app = new Vue({
@@ -55550,8 +55553,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/yemiwebby/tutorial/comet/laravel-chat/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/yemiwebby/tutorial/comet/laravel-chat/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\chatapp\lara-chat-app-starter\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\chatapp\lara-chat-app-starter\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
