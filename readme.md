@@ -1,3 +1,3 @@
-# Build a chat app with Laravel and Vue
+# Built a chat app with Laravel and Vue
 
 Starter repo
